@@ -1,0 +1,5 @@
+# ignore common OS-specific metadata files
+.DS_Store
+desktop.ini
+Thumbs.db
+
