@@ -10,6 +10,10 @@ public class EmotivWrapper {
         // TODO -- implement
     }
 
+    public static void pollDevice() {
+        // TODO -- implement
+    }
+
     public static void notifyState(MentalState state) {
         // TODO -- tell the polled service we are alert or not
 
