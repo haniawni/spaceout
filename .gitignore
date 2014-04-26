@@ -3,3 +3,7 @@
 desktop.ini
 Thumbs.db
 
+
+# vim swapfiles
+*.swp
+*.swo
