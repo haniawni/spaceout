@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="entity_name">SPACE OUT</string>
+    <string name="button_ok">OK</string>
 </resources>

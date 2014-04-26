@@ -21,7 +21,7 @@
 
   <build>
     <finalName>${project.artifactId}</finalName>
-    <sourceDirectory>../shared/src/main/java;src/main/java</sourceDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
     <pluginManagement>
       <plugins>
         <plugin>
