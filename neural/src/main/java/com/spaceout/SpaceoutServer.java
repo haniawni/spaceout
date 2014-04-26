@@ -18,14 +18,14 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
 public class SpaceoutServer implements HttpHandler {
-    private HttpServer server;
+    private HttpServer httpServer;
     private HttpContext context;
 
     private SpaceoutServer() throws IOException {
         InetSocketAddress address = new InetSocketAddress("0.0.0.0", 8080);
-        this.server = HttpServer.create(address, 0);
-        this.server.setExecutor(Executors.newFixedThreadPool(8));
-        this.context = this.server.createContext("/neural", this);
+        this.httpServer = HttpServer.create(address, 0);
+        this.httpServer.setExecutor(Executors.newFixedThreadPool(8));
+        this.context = this.httpServer.createContext("/neural", this);
     }
 
     public final void handle(HttpExchange exchange) throws IOException {
@@ -64,7 +64,8 @@ public class SpaceoutServer implements HttpHandler {
 
     public static void main(String[] args) {
         try {
-            new SpaceoutServer();
+            SpaceoutServer server = new SpaceoutServer();
+            server.httpServer.start();
         } catch (IOException ex) {
             System.err.println("Failed to startup HTTP server: exiting!");
             System.exit(1);
