@@ -3,17 +3,16 @@ spaceout
 
 Laptop-side
 --
-Poll Emotive hardware for mental state. If space-out state is detected, notify
-the Android segment.
+Poll Emotive hardware continuously over serial interface (Java) for mental state.
+If space-out state is detected, store to internal variable and wait for next request from Android side to respond with message indicating the space-out state has occurred.
 
-Language: Groovy
+Language: Groovy and Java
 
 Android-side
 --
 Continously record audio, keeping a buffer of the last n seconds of audio,
-where n is somewhere around 10 s. When a signal is received from the laptop
-segment, send audio buffer to wit.ai. Flash screen chartreuse and display text
-received back from wit.ai to the screen.
+where n is somewhere around 10 s. Continuously poll Laptop-side, checking if a space-out state has occurred.
+When space-out has occurred, send audio buffer to wit.ai. Flash screen chartreuse and display text
+received back from wit.ai to the screen. Continue translation in this manner until user hits OK button or Wit.AI returns no text translated.
 
 Language: Java
-
