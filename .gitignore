@@ -3,6 +3,9 @@
 desktop.ini
 Thumbs.db
 
+# Exuberant ctags files
+.tags
+
 
 # vim swapfiles
 *.swp
@@ -11,4 +14,4 @@ Thumbs.db
 # Maven targets
 android/target
 shared/target
-
+neural/target
