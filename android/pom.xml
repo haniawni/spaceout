@@ -5,7 +5,7 @@
   <artifactId>spaceout</artifactId>
   <packaging>apk</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>Jane</name>
+  <name>SPACE OUT</name>
   <url>http://maven.apache.org</url>
 
   <dependencies>
