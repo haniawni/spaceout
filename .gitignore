@@ -3,3 +3,12 @@
 desktop.ini
 Thumbs.db
 
+
+# vim swapfiles
+*.swp
+*.swo
+
+# Maven targets
+android/target
+shared/target
+
