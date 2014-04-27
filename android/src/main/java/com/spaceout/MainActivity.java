@@ -37,6 +37,8 @@ public class MainActivity extends Activity {
 				AUDIO_FORMAT
 			)
 		);
+
+		audioRecorder.startRecording();
     }
 
 	@Override
