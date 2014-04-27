@@ -72,17 +72,17 @@ public class SpeechToTextService extends Service {
         audioRecorder.read(buffer, 0, bufferSize);
 
         // pass the byte array out to Wit.AI
-        PostMethod method = new PostMethod("https://api.wit.ai/speech");
-        method.setRequestHeader("Authorization", "Bearer: " + API_KEY);
-        method.setRequestHeader("Content-Type", "audio/raw;encoding=unsigned-integer;bits=16;rate=8000;endian=big");
-        method.setRequestEntity(new ByteArrayRequestEntity(buffer));
+        PostMethod post = new PostMethod("https://api.wit.ai/speech");
+        post.setRequestHeader("Authorization", "Bearer: " + API_KEY);
+        post.setRequestHeader("Content-Type", "audio/raw;encoding=unsigned-integer;bits=16;rate=8000;endian=big");
+        post.setRequestEntity(new ByteArrayRequestEntity(buffer));
 
         String messageID = null;
         try {
-            this.client.executeMethod(method);
+            this.client.executeMethod(post);
 
-            byte[] responseBody = method.getResponseBody();
-            method.releaseConnection();
+            byte[] responseBody = post.getResponseBody();
+            post.releaseConnection();
             if (responseBody == null) {
                 Log.d("SPACEOUT", "no response received from Wit.AI");
                 // TODO -- show error on android GUI
