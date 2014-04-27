@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="entity_name">SPACE OUT</string>
+    <string name="please_config_network">Please configure network.</string>
     <string name="text_dot">.</string>
     <string name="button_ok">OK</string>
     <string name="button_cancel">Cancel</string>

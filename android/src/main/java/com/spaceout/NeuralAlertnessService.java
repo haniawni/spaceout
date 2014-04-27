@@ -22,10 +22,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class NeuralAlertnessService extends Service {
+    public static final String USER_IS_ALERT = "com.spaceout.user_alert";
+    public static final String USER_IS_BORED = "com.spaceout.user_bored";
+
     private Timer refreshTimer;
     private HttpClient client;
 
     private String ipAddress;
+
+    private boolean userIsBored = false;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -34,7 +39,7 @@ public class NeuralAlertnessService extends Service {
     }
 
     // returns true if the user is bored, false otherwise
-    public boolean checkIsBored(String ipAddress) {
+    public void checkIsBored(String ipAddress) {
         // http request to server for boredom
         HttpMethod method = new PostMethod(
             "http://" + ipAddress + ":8080/neural"
@@ -47,7 +52,7 @@ public class NeuralAlertnessService extends Service {
             if (responseBody == null) {
                 Log.d("SPACEOUT", "no response received");
                 // TODO -- show error on android GUI
-                return false;
+                return;
             }
 
             String response = new String(responseBody);
@@ -56,19 +61,16 @@ public class NeuralAlertnessService extends Service {
             // parse the JSON response
             try {
                 JSONObject result = new JSONObject(response);
-                return result.getBoolean("spaced out?");
+                this.userIsBored = result.getBoolean("spaced out?");
             } catch (JSONException jsEx) {
                 Log.e("SPACEOUT", "Failed to parse result from server!");
                 Log.e("SPACEOUT", jsEx.getMessage());
-                return false;
             }
         } catch (IOException ex) {
             // TODO -- show error on android GUI
             Log.e("SPACEOUT", "Failed to connect to server!");
             Log.e("SPACEOUT", ex.getMessage());
         }
-
-        return false;
     }
 
     @Override
@@ -83,10 +85,15 @@ public class NeuralAlertnessService extends Service {
                     "SPACEOUT",
                     "polling " + ipAddress + " for alertness..."
                 );
-                if (checkIsBored(ipAddress)) {
+
+                boolean userWasAlreadyBored = userIsBored;
+                checkIsBored(ipAddress);
+                if (!userWasAlreadyBored && userIsBored) {
+                    // broadcast that the user is bored
                     Log.d("SPACEOUT", "user is bored!");
-                    // TODO -- flash screen
-                    // TODO -- start audio transcoding to text
+                    Intent broadcast = new Intent();
+                    broadcast.setAction(USER_IS_BORED);
+                    sendBroadcast(broadcast);
                 }
             }
         }, 0, 1000);

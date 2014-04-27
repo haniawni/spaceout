@@ -1,19 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-    <Button
-        android:layout_width="wrap_content"
+    <ScrollView android:id="@+id/subtitleScroller"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_ok"
-    />
-    <Button
-        android:layout_width="wrap_content"
+        android:layout_weight="10"
+        android:scrollbars="vertical">
+        <TextView
+            android:id="@+id/subtitles"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/please_config_network" />
+    </ScrollView>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_network"
-        android:onClick="setNetwork"
-    />
+        android:layout_weight="1"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_ok"
+            android:onClick="clearSubtitles"
+        />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_network"
+            android:onClick="setNetwork"
+        />
+    </LinearLayout>
 </LinearLayout>
-
