@@ -72,7 +72,7 @@ public class AudioRecorderService extends Service
         mRecorder = new MediaRecorder();
 
 		scheduler.scheduleAtFixedRate(
-			<command>,
+			new TransitionToNextChunk(),
 			0,
 			CHUNK_DURATION,
 			TimeUnit.SECONDS
