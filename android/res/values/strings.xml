@@ -2,4 +2,6 @@
 <resources>
     <string name="entity_name">SPACE OUT</string>
     <string name="button_ok">OK</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_network">Network...</string>
 </resources>

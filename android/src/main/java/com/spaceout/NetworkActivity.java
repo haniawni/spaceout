@@ -8,16 +8,17 @@ import android.os.Bundle;
 
 import android.view.View;
 
-public class MainActivity extends Activity {
+public class NetworkActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.network);
     }
 
-    public void setNetwork(View view) {
-        startActivity(new Intent(this, NetworkActivity.class));
+    public void confirm(View view) {
+        // startActivity(new Intent(this, NetworkActivity.class));
     }
 
 }
+
