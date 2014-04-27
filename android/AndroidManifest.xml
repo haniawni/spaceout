@@ -26,5 +26,8 @@
         <service android:name="NeuralAlertnessService">
         </service>
 
+        <service android:name="SpeechToTextService">
+        </service>
+
     </application>
 </manifest>
