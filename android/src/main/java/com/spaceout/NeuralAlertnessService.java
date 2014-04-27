@@ -25,7 +25,7 @@ public class NeuralAlertnessService extends Service {
     private Timer refreshTimer;
     private HttpClient client;
 
-    private String ipAddress = "192.168.1.169";
+    private String ipAddress;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -33,32 +33,11 @@ public class NeuralAlertnessService extends Service {
         return null;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        this.client = new HttpClient();
-        this.refreshTimer = new Timer();
-        this.refreshTimer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                Log.d(
-                    "SPACEOUT",
-                    "polling for alertness..."
-                );
-                if (checkIsBored()) {
-                    Log.d("SPACEOUT", "user is bored!");
-                    // TODO -- flash screen
-                    // TODO -- start audio transcoding to text
-                }
-            }
-        }, 0, 1000);
-    }
-
     // returns true if the user is bored, false otherwise
-    public boolean checkIsBored() {
-        // TODO -- http request to server for boredom
+    public boolean checkIsBored(String ipAddress) {
+        // http request to server for boredom
         HttpMethod method = new PostMethod(
-            "http://" + this.ipAddress + ":8080/neural"
+            "http://" + ipAddress + ":8080/neural"
         );
 
         try {
@@ -94,6 +73,24 @@ public class NeuralAlertnessService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        this.ipAddress = intent.getStringExtra("ipAddress");
+
+        this.client = new HttpClient();
+        this.refreshTimer = new Timer();
+        this.refreshTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                Log.d(
+                    "SPACEOUT",
+                    "polling " + ipAddress + " for alertness..."
+                );
+                if (checkIsBored(ipAddress)) {
+                    Log.d("SPACEOUT", "user is bored!");
+                    // TODO -- flash screen
+                    // TODO -- start audio transcoding to text
+                }
+            }
+        }, 0, 1000);
+
         return Service.START_STICKY;
     }
 

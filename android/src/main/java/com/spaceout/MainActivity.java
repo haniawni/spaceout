@@ -19,8 +19,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        startService(new Intent(this, NeuralAlertnessService.class));
     }
 
     public void setNetwork(View view) {
@@ -43,6 +41,12 @@ public class MainActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 this.ipAddress = data.getStringExtra("ipAddress");
                 Log.d("SPACEOUT", "ip address of server set to " + this.ipAddress);
+
+                // restart the service with the new ip address
+                stopService(new Intent(this, NeuralAlertnessService.class));
+                Intent serviceIntent = new Intent(this, NeuralAlertnessService.class);
+                serviceIntent.putExtra("ipAddress", this.ipAddress);
+                startService(serviceIntent);
             }
         }
     }
