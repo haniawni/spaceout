@@ -10,7 +10,10 @@ import org.apache.commons.httpclient.methods.PostMethod;
 
 import android.app.Service;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -24,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SpeechToTextService extends Service {
+    public static final String SPEECH_DETECTED = "com.spaceout.speech_detected";
     private static final String API_KEY = "[KEY]";
 
     private HttpClient client;
@@ -64,12 +68,35 @@ public class SpeechToTextService extends Service {
 		);
 		audioRecorder.startRecording();
 
+        // register a listener for bored user
+        Log.d("SPACEOUT", "registering boredom hook");
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(NeuralAlertnessService.USER_IS_BORED);
+        registerReceiver(receiver, filter);
+
         return Service.START_STICKY;
     }
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            new Thread() {
+                public void run() {
+                    Log.d("SPACEOUT", "Retrieving spoken text");
+                    String spokenText = getSpokenText();
+
+                    Intent broadcast = new Intent();
+                    broadcast.setAction(SPEECH_DETECTED);
+                    broadcast.putExtra("text", spokenText);
+                    sendBroadcast(broadcast);
+                }
+            }.start();
+        }
+    };
+
     public String getSpokenText() {
         // get the speech sound as a byte array
-        byte[] buffer = new byte[bufferSize];
+        byte[] buffer = new byte[bufferSize * 30];
         audioRecorder.read(buffer, 0, bufferSize);
 
         // pass the byte array out to Wit.AI
@@ -85,7 +112,7 @@ public class SpeechToTextService extends Service {
             byte[] responseBody = post.getResponseBody();
             post.releaseConnection();
             if (responseBody == null) {
-                Log.d("SPACEOUT", "no response received from Wit.AI");
+                Log.d("SPACEOUT", "no POST response received from Wit.AI");
                 // TODO -- show error on android GUI
                 return null;
             }
@@ -98,7 +125,7 @@ public class SpeechToTextService extends Service {
                 JSONObject result = new JSONObject(response);
                 messageID = result.getString("msg_id");
             } catch (JSONException jsEx) {
-                Log.e("SPACEOUT", "Failed to parse result from Wit.AI!");
+                Log.e("SPACEOUT", "Failed to parse POST result from Wit.AI!");
                 Log.e("SPACEOUT", jsEx.getMessage());
             }
         } catch (IOException ex) {
@@ -117,7 +144,7 @@ public class SpeechToTextService extends Service {
             byte[] responseBody = get.getResponseBody();
             get.releaseConnection();
             if (responseBody == null) {
-                Log.d("SPACEOUT", "no response received from Wit.AI");
+                Log.d("SPACEOUT", "no GET response received from Wit.AI");
                 // TODO -- show error on android GUI
                 return null;
             }
@@ -130,7 +157,7 @@ public class SpeechToTextService extends Service {
                 JSONObject result = new JSONObject(response);
                 return result.getString("msg_body");
             } catch (JSONException jsEx) {
-                Log.e("SPACEOUT", "Failed to parse result from Wit.AI!");
+                Log.e("SPACEOUT", "Failed to parse GET result from Wit.AI!");
                 Log.e("SPACEOUT", jsEx.getMessage());
             }
         } catch (IOException ex) {
@@ -147,6 +174,7 @@ public class SpeechToTextService extends Service {
 			audioRecorder.release();
 			audioRecorder = null;
 		}
+        unregisterReceiver(receiver);
         super.onDestroy();
     }
 }

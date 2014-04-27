@@ -25,7 +25,8 @@ public class MainActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             TextView subtitles = (TextView) findViewById(R.id.subtitles);
-            subtitles.append("User is bored!\n");
+            String spokenText = intent.getStringExtra("text");
+            subtitles.append(spokenText + "\n");
         }
     };
 
@@ -37,8 +38,13 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onResume() {
+        // start the speech recognition service
+        Intent serviceIntent = new Intent(this, SpeechToTextService.class);
+        startService(serviceIntent);
+
+        // trigger detected speech to append to the subtitles
         IntentFilter filter = new IntentFilter();
-        filter.addAction(NeuralAlertnessService.USER_IS_BORED);
+        filter.addAction(SpeechToTextService.SPEECH_DETECTED);
         registerReceiver(receiver, filter);
         super.onResume();
     }
@@ -46,6 +52,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         unregisterReceiver(receiver);
+        stopService(new Intent(this, SpeechToTextService.class));
+
         super.onPause();
     }
 
