@@ -49,18 +49,10 @@ public class AudioRecorderService extends Service
 		new ScheduledThreadPoolExecutor(1);
 
 
-    private void onRecord(boolean start) {
-        if (start) {
-            startRecording();
-        } else {
-            stopRecording();
-        }
-    }
-
     private void startRecording() {
         mRecorder = new MediaRecorder();
 
-		this.scheduler.scheduleAtFixedRate(
+		scheduler.scheduleAtFixedRate(
 			<command>,
 			0,
 			CHUNK_DURATION,
@@ -90,8 +82,8 @@ public class AudioRecorderService extends Service
 
 		@Override
 		public void run() {
-			// FIXME: I have no idea how to call the outer class'
-			// stopRecordingChunk() and startRecordingChunk()
+			AudioRecorderService.this.stopRecordingChunk();
+			AudioRecorderService.this.startRecordingChunk();
 		}
 	}
 
@@ -100,9 +92,20 @@ public class AudioRecorderService extends Service
 	}
 
     private void stopRecording() {
-		this.stopRecordingChunk();
+		scheduler.shutdownNow();
+		stopRecordingChunk();
         mRecorder.release();
         mRecorder = null;
     }
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		startRecording();
+	}
+
+	@Override
+	public void onDestroy() {
+		stopRecording();
+	}
 }
 
