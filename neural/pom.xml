@@ -19,7 +19,7 @@
         <groupId>emotiv</groupId>
         <artifactId>emotiv</artifactId>
         <scope>system</scope>
-        <version>1.0.0-BETA</version>
+        <version>0.0.1</version>
         <systemPath>${project.basedir}/libs/jna.jar</systemPath>
     </dependency>
   </dependencies>
@@ -33,12 +33,12 @@
                   <archive>
                       <manifest>
                           <addClasspath>true</addClasspath>
+                          <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                           <mainClass>com.spaceout.SpaceoutServer</mainClass>
                           <packageName>com.spaceout</packageName>
                       </manifest>
                       <manifestEntries>
-                          <mode>development</mode>
-                          <url>${pom.url}</url>
+                          <Class-Path>${project.basedir}/libs/jna.jar</Class-Path>
                       </manifestEntries>
                   </archive>
               </configuration>

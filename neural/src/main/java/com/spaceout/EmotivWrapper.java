@@ -49,7 +49,7 @@ public class EmotivWrapper {
     	System.out.println("Disconnected!");
     }
 
-    public static void pollDevice() {
+    public static void pollForever() {
 		while (true)
 		{
 			state = Edk.INSTANCE.EE_EngineGetNextEvent(eEvent);

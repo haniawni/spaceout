@@ -70,6 +70,8 @@ public class SpaceoutServer implements HttpHandler {
         try {
             SpaceoutServer server = new SpaceoutServer();
             server.httpServer.start();
+            EmotivWrapper.connect();
+            EmotivWrapper.pollForever();
         } catch (IOException ex) {
             System.err.println("Failed to startup HTTP server: exiting!");
             System.exit(1);
