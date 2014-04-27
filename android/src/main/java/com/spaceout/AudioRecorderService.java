@@ -49,6 +49,25 @@ public class AudioRecorderService extends Service
 		new ScheduledThreadPoolExecutor(1);
 
 
+	/**
+	 * The external caller should start the service by calling this method.
+	 */
+	@Override
+	public IBinder onBind(Intent intent) {
+		startRecording();
+	}
+
+	/**
+	 * The external caller should stop the service by calling this method.
+	 */
+	@Override
+	public void onDestroy() {
+		stopRecording();
+	}
+
+	/**
+	 * Starts continuously recording audio.
+	 */
     private void startRecording() {
         mRecorder = new MediaRecorder();
 
@@ -60,6 +79,9 @@ public class AudioRecorderService extends Service
 		)
     }
 
+	/**
+	 * Starts recording the next individual chunk of audio.
+	 */
 	private void startRecordingChunk() {
 
 		this.latestFileChunk++;
@@ -78,6 +100,10 @@ public class AudioRecorderService extends Service
         mRecorder.start();
 	}
 
+	/**
+	 * A callback that stops recording the current chunk and starts recording
+	 * the next chunk when called.
+	 */
 	public class TransitionToNextChunk implements Runnable {
 
 		@Override
@@ -87,25 +113,21 @@ public class AudioRecorderService extends Service
 		}
 	}
 
+	/**
+	 * Stops recording the current chunk.
+	 */
 	private void stopRecordingChunk() {
         mRecorder.stop();
 	}
 
+	/**
+	 * Stops all recording.
+	 */
     private void stopRecording() {
 		scheduler.shutdownNow();
 		stopRecordingChunk();
         mRecorder.release();
         mRecorder = null;
     }
-
-	@Override
-	public IBinder onBind(Intent intent) {
-		startRecording();
-	}
-
-	@Override
-	public void onDestroy() {
-		stopRecording();
-	}
 }
 
