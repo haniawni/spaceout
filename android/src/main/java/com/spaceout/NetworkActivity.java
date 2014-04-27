@@ -31,7 +31,19 @@ public class NetworkActivity extends Activity {
         setContentView(R.layout.network);
 
         final Button okButton = (Button) findViewById(R.id.ip_ok);
-        okButton.setEnabled(false);
+
+        // load the ip address in from the main activity
+        String ipAddress = getIntent().getStringExtra("ipAddress");
+        if (ipAddress != null) {
+            String[] parts = ipAddress.split("\\.");
+            for (int i = 0; i < ids.length; i++) {
+                int id = ids[i];
+                EditText editText = (EditText) findViewById(id);
+                editText.setText(parts[i]);
+            }
+        } else {
+            okButton.setEnabled(false);
+        }
 
         for (int id : ids) {
             EditText editText = (EditText) findViewById(id);
@@ -75,7 +87,10 @@ public class NetworkActivity extends Activity {
             ((EditText) findViewById(ids[3])).getText().toString(),
         });
 
-        // TODO -- pass ip address to client http service
+        // pass ip address to client http service
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("ipAddress", ipAddress);
+        setResult(RESULT_OK, returnIntent);
         this.finish();
     }
 

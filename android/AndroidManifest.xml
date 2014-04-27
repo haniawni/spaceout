@@ -11,14 +11,16 @@
     <application android:label="@string/entity_name" android:icon="@drawable/ic_launcher">
 
         <activity android:name="MainActivity"
-                  android:label="@string/entity_name">
+                  android:label="@string/entity_name"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name="NetworkActivity" >
+        <activity android:name="NetworkActivity"
+                  android:screenOrientation="portrait">
         </activity>
 
         <service android:name="NeuralAlertnessService">
