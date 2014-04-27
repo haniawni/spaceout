@@ -31,7 +31,6 @@ public class AudioRecorderService extends Service
     private static final String LOG_TAG = "AudioRecorderService";
     private static String mFileNamePrefix = "spaceout_";
 
-
     private MediaRecorder mRecorder = null;
 
 	// audio must be broken into chunks because Wit cannot consume audio clips
@@ -44,13 +43,10 @@ public class AudioRecorderService extends Service
 	private static final double CHUNK_DURATION_S = 9.5
 
 	// index number of current audio chunk
-	private int latestFileChunk = -1;
-
-	// Unix timestamp at which current audio chunk starts
-	private long latestFileChunkStartTimestamp = 0;
+	private int latestFileChunkNumber = -1;
 
 	private ScheduledThreadPoolExecutor scheduler =
-		new ScheduledThreadPoolExecutor(2)
+		new ScheduledThreadPoolExecutor(1);
 
 
     private void onRecord(boolean start) {
@@ -63,9 +59,6 @@ public class AudioRecorderService extends Service
 
     private void startRecording() {
         mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
 		this.scheduler.scheduleAtFixedRate(
 			<command>,
@@ -78,7 +71,11 @@ public class AudioRecorderService extends Service
 	private void startRecordingChunk() {
 
 		this.latestFileChunk++;
-        mRecorder.setOutputFile(mFileName + latestFileChunk.toString());
+
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mRecorder.setOutputFile(mFileName + latestFileChunkNumber.toString());
 
         try {
             mRecorder.prepare();
@@ -86,8 +83,16 @@ public class AudioRecorderService extends Service
             Log.e(LOG_TAG, "prepare() failed");
         }
 
-		this.latestFileChunkStartTimestamp = System.getCurrentTimeMillis();
         mRecorder.start();
+	}
+
+	public class TransitionToNextChunk implements Runnable {
+
+		@Override
+		public void run() {
+			// FIXME: I have no idea how to call the outer class'
+			// stopRecordingChunk() and startRecordingChunk()
+		}
 	}
 
 	private void stopRecordingChunk() {
