@@ -10,7 +10,7 @@ public class EmotivWrapper {
     static Pointer eState	        = Edk.INSTANCE.EE_EmoStateCreate();
     static IntByReference userID 	= null;
     static short composerPort	   	= 1726;
-    static int debugMode       		= 1;
+    static int debugMode       		= System.getProperty("DEBUG") != null ? 1 : 0;
     static int state    	    	= 0;
 
     static boolean isBored = false;
