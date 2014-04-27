@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
     @Override
     public void onDestroy() {
         stopService(new Intent(this, NeuralAlertnessService.class));
-        stopService(new Intent(this, AudioRecordingService.class));
+        stopService(new Intent(this, SpeechToTextService.class));
 
         super.onDestroy();
     }

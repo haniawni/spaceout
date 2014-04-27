@@ -10,7 +10,7 @@ import android.media.MediaRecorder;
 
 import android.os.IBinder;
 
-public class AudioRecordingService extends Service {
+public class SpeechToTextService extends Service {
 	/**
 	 * The audio sample properties expected by Wit.
 	 */
@@ -20,7 +20,7 @@ public class AudioRecordingService extends Service {
 	private static final short WIT_MAX_DURATION_S = 10;
 
     private AudioRecord audioRecorder = null;
-    private byte[] audioBuffer;
+    private int bufferSize;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -30,23 +30,32 @@ public class AudioRecordingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        this.bufferSize = 2 * AudioRecord.getMinBufferSize(
+            WIT_SAMPLE_RATE_HZ,
+            WIT_CHANNEL_CONFIG,
+            WIT_AUDIO_FORMAT
+        );
+
         audioRecorder = new AudioRecord(
 			MediaRecorder.AudioSource.MIC,
 			WIT_SAMPLE_RATE_HZ,
 			WIT_CHANNEL_CONFIG,
 			WIT_AUDIO_FORMAT,
-			2 * AudioRecord.getMinBufferSize(
-				WIT_SAMPLE_RATE_HZ,
-				WIT_CHANNEL_CONFIG,
-				WIT_AUDIO_FORMAT
-			)
+            this.bufferSize
 		);
+		audioRecorder.startRecording();
 
         return Service.START_STICKY;
     }
 
-    public void recordSample() {
-		audioRecorder.startRecording();
+    public String getSpokenText() {
+        // get the speech sound as a byte array
+        byte[] buffer = new byte[bufferSize];
+        audioRecorder.read(buffer, 0, bufferSize);
+
+        // TODO -- pass the byte array out to Wit.AI
+
+        return null;
     }
 
     public void onDestroy() {
