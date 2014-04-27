@@ -15,11 +15,17 @@ import android.view.View;
 
 import android.widget.TextView;
 
+import com.qualcomm.toq.smartwatch.api.v1.deckofcards.remote.RemoteDeckOfCards;
+import com.qualcomm.toq.smartwatch.api.v1.deckofcards.remote.DeckOfCardsManager;
+import com.qualcomm.toq.smartwatch.api.v1.deckofcards.card.SimpleTextCard;
+
 public class MainActivity extends Activity {
 
     private static final int REQUEST_CODE = 1;
 
     private String ipAddress;
+
+	private DeckOfCardsManager toqManager;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -33,6 +39,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+
+		// initialize the Toq display for our app
+		toqManager = DeckOfCardsManager.getInstance(this);
+		toqManager.installDeckOfCards(new RemoteDeckOfCards(this));
     }
 
     @Override
