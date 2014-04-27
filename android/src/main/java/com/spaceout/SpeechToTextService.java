@@ -53,7 +53,7 @@ public class SpeechToTextService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.client = new HttpClient();
 
-        this.bufferSize = 2 * AudioRecord.getMinBufferSize(
+        this.bufferSize = 10 * AudioRecord.getMinBufferSize(
             WIT_SAMPLE_RATE_HZ,
             WIT_CHANNEL_CONFIG,
             WIT_AUDIO_FORMAT
@@ -85,6 +85,11 @@ public class SpeechToTextService extends Service {
                     Log.d("SPACEOUT", "Retrieving spoken text");
                     String spokenText = getSpokenText();
 
+                    if (spokenText == null) {
+                        Log.d("SPACEOUT", "No spoken text was received");
+                        return;
+                    }
+
                     Intent broadcast = new Intent();
                     broadcast.setAction(SPEECH_DETECTED);
                     broadcast.putExtra("text", spokenText);
@@ -96,18 +101,20 @@ public class SpeechToTextService extends Service {
 
     public String getSpokenText() {
         // get the speech sound as a byte array
-        byte[] buffer = new byte[bufferSize * 30];
+        byte[] buffer = new byte[bufferSize];
         audioRecorder.read(buffer, 0, bufferSize);
 
         // pass the byte array out to Wit.AI
         PostMethod post = new PostMethod("https://api.wit.ai/speech");
-        post.setRequestHeader("Authorization", "Bearer: " + API_KEY);
+        post.setRequestHeader("Authorization", "Bearer " + API_KEY);
         post.setRequestHeader("Content-Type", "audio/raw;encoding=unsigned-integer;bits=16;rate=8000;endian=big");
+        post.setRequestHeader("Content-Length", ""+bufferSize);
         post.setRequestEntity(new ByteArrayRequestEntity(buffer));
 
         String messageID = null;
         try {
-            this.client.executeMethod(post);
+            int resultCode = this.client.executeMethod(post);
+            Log.d("SPACEOUT", "POST response code: " + resultCode);
 
             byte[] responseBody = post.getResponseBody();
             post.releaseConnection();
@@ -134,12 +141,18 @@ public class SpeechToTextService extends Service {
             Log.e("SPACEOUT", ex.getMessage());
         }
 
+        if (messageID == null) {
+            // can't retrieve the translated text if we didn't get a message ID
+            return null;
+        }
+
         // pass the byte array out to Wit.AI
         GetMethod get = new GetMethod("https://api.wit.ai/messages/" + messageID);
-        get.setRequestHeader("Authorization", "Bearer: " + API_KEY);
+        get.addRequestHeader("Authorization", "Bearer: " + API_KEY);
 
         try {
-            this.client.executeMethod(get);
+            int resultCode = this.client.executeMethod(get);
+            Log.d("SPACEOUT", "GET response code: " + resultCode);
 
             byte[] responseBody = get.getResponseBody();
             get.releaseConnection();
