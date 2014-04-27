@@ -9,14 +9,17 @@
   <url>http://maven.apache.org</url>
 
   <dependencies>
-
-    <dependency>
-      <groupId>com.google.android</groupId>
-      <artifactId>android</artifactId>
-      <version>2.2.1</version>
-      <scope>provided</scope>
-    </dependency>
-
+      <dependency>
+          <groupId>com.google.android</groupId>
+          <artifactId>android</artifactId>
+          <version>2.2.1</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>commons-httpclient</groupId>
+          <artifactId>commons-httpclient</artifactId>
+          <version>3.1</version>
+      </dependency>
   </dependencies>
 
   <build>
