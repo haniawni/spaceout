@@ -6,7 +6,7 @@ wearable tech. This project uses an [Emotiv
 EPOC](http://emotiv.com/epoc/features.php) to detect when a user is
 daydreaming and an Android phone to constantly record ambient audio. If the
 user is spacing out, an alert is flashed on the user's phone and the recorded
-audio is streamed to a [Wit](https://wit.ai/) device for audio-to-text
+audio is streamed to the [Wit API](https://wit.ai/) for audio-to-text
 translation. This text is then displayed to the user on their phone (or even
 better, on a Google Glass-style heads-up display) so the user can catch up on
 what they missed while daydreaming.
