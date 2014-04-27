@@ -75,7 +75,10 @@ public class NetworkActivity extends Activity {
             ((EditText) findViewById(ids[3])).getText().toString(),
         });
 
-        // TODO -- pass ip address to client http service
+        // pass ip address to client http service
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("ipAddress", ipAddress);
+        setResult(RESULT_OK, returnIntent);
         this.finish();
     }
 
