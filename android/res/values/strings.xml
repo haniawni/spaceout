@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="entity_name">SPACE OUT</string>
+    <string name="text_dot">.</string>
     <string name="button_ok">OK</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_network">Network...</string>
+    <string name="ip_hint_192">192</string>
+    <string name="ip_hint_168">168</string>
+    <string name="ip_hint_1">1</string>
 </resources>

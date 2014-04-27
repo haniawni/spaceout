@@ -17,7 +17,12 @@ public class NetworkActivity extends Activity {
     }
 
     public void confirm(View view) {
-        // startActivity(new Intent(this, NetworkActivity.class));
+        // TODO -- check for inputs all being between 0 and 255
+        this.finish();
+    }
+
+    public void cancel(View view) {
+        this.finish();
     }
 
 }

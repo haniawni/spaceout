@@ -11,34 +11,56 @@
         <EditText
             android:id="@+id/ip_0"
             android:inputType="number"
-            android:digits="0123456789."
-            android:layout_width="fill_parent"
+            android:digits="0123456789"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:hint="@string/ip_hint_192"
+        />
+        <TextView
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:text="@string/text_dot"
         />
         <EditText
             android:id="@+id/ip_1"
             android:inputType="number"
-            android:digits="0123456789."
-            android:layout_width="fill_parent"
+            android:digits="0123456789"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:hint="@string/ip_hint_168"
+        />
+        <TextView
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:text="@string/text_dot"
         />
         <EditText
             android:id="@+id/ip_2"
             android:inputType="number"
-            android:digits="0123456789."
-            android:layout_width="fill_parent"
+            android:digits="0123456789"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:hint="@string/ip_hint_1"
+        />
+        <TextView
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:text="@string/text_dot"
         />
         <EditText
             android:id="@+id/ip_3"
             android:inputType="number"
-            android:digits="0123456789."
-            android:layout_width="fill_parent"
-            android:layout_weight="1"
+            android:digits="0123456789"
+            android:layout_width="0dp"
+            android:layout_weight="4"
             android:layout_height="wrap_content"
+            android:hint="@string/ip_hint_1"
         />
     </LinearLayout>
 
@@ -51,12 +73,14 @@
             android:layout_height="wrap_content"
             android:text="@string/button_ok"
             android:layout_weight="1"
+            android:onClick="confirm"
         />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_cancel"
             android:layout_weight="1"
+            android:onClick="cancel"
         />
     </LinearLayout>
 </LinearLayout>
