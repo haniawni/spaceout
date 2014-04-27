@@ -1,3 +1,5 @@
+package com.emotiv;
+
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -5,12 +7,12 @@ import com.sun.jna.ptr.*;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
 
-public interface Edk extends Library  
+public interface Edk extends Library
 {
     	Edk INSTANCE = (Edk)
             Native.loadLibrary("edk",
             		Edk.class);
-    	
+
     	public enum EE_ExpressivThreshold_t {
     		EXP_SENSITIVITY
     	} ;
@@ -18,17 +20,17 @@ public interface Edk extends Library
     	//! Expressiv Suite training control enumerator
     	public enum EE_ExpressivTrainingControl_t {
     		EXP_NONE, EXP_START, EXP_ACCEPT, EXP_REJECT, EXP_ERASE, EXP_RESET
-    	} 
+    	}
 
     	//! Expressiv Suite signature type enumerator
     	public enum EE_ExpressivSignature_t {
     		EXP_SIG_UNIVERSAL, EXP_SIG_TRAINED
-    	} 
+    	}
 
     	 //! Cognitiv Suite training control enumerator
     	public enum EE_CognitivTrainingControl_t {
     		COG_NONE, COG_START, COG_ACCEPT, COG_REJECT, COG_ERASE, COG_RESET
-    	} 
+    	}
 
     //DEPLOYMENT::STABLE_RELEASE::REMOVE_START
 
@@ -36,7 +38,7 @@ public interface Edk extends Library
     	//@@ This constant has been obsoleted
     	public enum EE_CognitivLevel_t {
     		COG_LEVEL1, COG_LEVEL2, COG_LEVEL3, COG_LEVEL4
-    	} 
+    	}
 
     	//! EmoEngine event types
     	public enum EE_Event_t {
@@ -61,32 +63,32 @@ public interface Edk extends Library
     		{
     			return(bit);
     		}
-    	} 
+    	}
 
     	//! Expressiv-specific event types
     	public enum EE_ExpressivEvent_t {
     		EE_ExpressivNoEvent, EE_ExpressivTrainingStarted, EE_ExpressivTrainingSucceeded,
     		EE_ExpressivTrainingFailed, EE_ExpressivTrainingCompleted, EE_ExpressivTrainingDataErased,
     		EE_ExpressivTrainingRejected, EE_ExpressivTrainingReset
-    	} 
-    	
+    	}
+
     	//! Cognitiv-specific event types
     	public enum EE_CognitivEvent_t {
     		EE_CognitivNoEvent, EE_CognitivTrainingStarted, EE_CognitivTrainingSucceeded,
     		EE_CognitivTrainingFailed, EE_CognitivTrainingCompleted, EE_CognitivTrainingDataErased,
     		EE_CognitivTrainingRejected, EE_CognitivTrainingReset,
     		EE_CognitivAutoSamplingNeutralCompleted, EE_CognitivSignatureUpdated
-    	} 
+    	}
 
     //DEPLOYMENT::NON_PREMIUM_RELEASE::REMOVE_START
     	public enum EE_DataChannels_t {
     		ED_COUNTER, ED_INTERPOLATED, ED_RAW_CQ,
-    		ED_AF3, ED_F7, ED_F3, ED_FC5, ED_T7, 
-    		ED_P7, ED_O1, ED_O2, ED_P8, ED_T8, 
-    		ED_FC6, ED_F4, ED_F8, ED_AF4, ED_GYROX, 
-    		ED_GYROY, ED_TIMESTAMP, ED_ES_TIMESTAMP, ED_FUNC_ID, ED_FUNC_VALUE, ED_MARKER, 
+    		ED_AF3, ED_F7, ED_F3, ED_FC5, ED_T7,
+    		ED_P7, ED_O1, ED_O2, ED_P8, ED_T8,
+    		ED_FC6, ED_F4, ED_F8, ED_AF4, ED_GYROX,
+    		ED_GYROY, ED_TIMESTAMP, ED_ES_TIMESTAMP, ED_FUNC_ID, ED_FUNC_VALUE, ED_MARKER,
     		ED_SYNC_SIGNAL
-    	} 
+    	}
     //DEPLOYMENT::NON_PREMIUM_RELEASE::REMOVE_END
 
     	//! Input sensor description
@@ -101,7 +103,7 @@ public interface Edk extends Library
 
 
     	//! Initializes the connection to EmoEngine. This function should be called at the beginning of programs that make use of EmoEngine, most probably in initialization routine or constructor.
-    	/*!	
+    	/*!
     		\return EDK_ERROR_CODE
     				- EDK_ERROR_CODEEDK_OK if a connection is established
 
@@ -110,7 +112,7 @@ public interface Edk extends Library
     	int
     		EE_EngineConnect(String strDevID);
 
-    	
+
     	//! Initializes the connection to a remote instance of EmoEngine.
     	/*!
     		Blocking call
@@ -119,7 +121,7 @@ public interface Edk extends Library
     		\param port - The port number of the remote EmoEngine server
     					- If connecting to the Emotiv Control Panel, use port 3008
     					- If connecting to the EmoComposer, use port 1726
-    	
+
     		\return EDK_ERROR_CODE
     				- EDK_ERROR_CODEEDK_OK if a connection is established
 
@@ -128,7 +130,7 @@ public interface Edk extends Library
     	int
     		EE_EngineRemoteConnect(String szHost, short port, String strDevID);
 
-    	
+
     	//! Terminates the connection to EmoEngine. This function should be called at the end of programs which make use of EmoEngine, most probably in clean up routine or destructor.
     	/*!
     		\return EDK_ERROR_CODE
@@ -153,7 +155,7 @@ public interface Edk extends Library
     	int
     		EE_EnableDiagnostics(String szFilename, int fEnable, int nReserved);
 
-    	
+
     	//! Returns a handle to memory that can hold an EmoEngine event. This handle can be reused by the caller to retrieve subsequent events.
     	/*!
     		\return Pointer
@@ -169,7 +171,7 @@ public interface Edk extends Library
     	Pointer
     		EE_ProfileEventCreate();
 
-    	
+
     	//! Frees memory referenced by an event handle.
     	/*!
     		\param hEvent - a handle returned by EE_EmoEngineEventCreate() or EE_ProfileEventCreate()
@@ -177,7 +179,7 @@ public interface Edk extends Library
     	void
     		EE_EmoEngineEventFree(Pointer hEvent);
 
-    	
+
     	//! Returns a handle to memory that can store an EmoState. This handle can be reused by the caller to retrieve subsequent EmoStates.
     	/*!
     		\return Pointer
@@ -185,7 +187,7 @@ public interface Edk extends Library
     	Pointer
     		EE_EmoStateCreate();
 
-    	
+
     	//! Frees memory referenced by an EmoState handle.
     	/*!
     		\param hState - a handle returned by EE_EmoStateCreate()
@@ -197,17 +199,17 @@ public interface Edk extends Library
     	//! Returns the event type for an event already retrieved using EE_EngineGetNextEvent.
     	/*!
     		\param hEvent - a handle returned by EE_EmoEngineEventCreate()
-    	
+
     		\return int
     	*/
     	int
     		EE_EmoEngineEventGetType(Pointer hEvent);
 
-    	
+
     	//! Returns the Cognitiv-specific event type for an EE_CognitivEvent event already retrieved using EE_EngineGetNextEvent.
     	/*!
     		\param hEvent - a handle returned by EE_EmoEngineEventCreate()
-    	
+
     		\return int
     	*/
     	int
@@ -217,18 +219,18 @@ public interface Edk extends Library
     	//! Returns the Expressiv-specific event type for an EE_ExpressivEvent event already retrieved using EE_EngineGetNextEvent.
     	/*!
     		\param hEvent - a handle returned by EE_EmoEngineEventCreate()
-    	
+
     		\return int
     	*/
     	int
     		EE_ExpressivEventGetType(Pointer hEvent);
-    	
+
 
     	//! Retrieves the user ID for EE_UserAdded and EE_UserRemoved events.
     	/*!
     		\param hEvent - a handle returned by EE_EmoEngineEventCreate()
     		\param pUserIdOut - receives the user ID associated with the current event
-    	
+
     		\return EDK_ERROR_CODE
     				- EDK_ERROR_CODEEDK_OK if successful.
 
@@ -237,12 +239,12 @@ public interface Edk extends Library
     	int
     		EE_EmoEngineEventGetUserId(Pointer hEvent, IntByReference pUserIdOut);
 
-    	
+
     	//! Copies an EmoState returned with a EE_EmoStateUpdate event to memory referenced by an Pointer.
     	/*!
     		\param hEvent - a handle returned by EE_EmoEngineEventCreate() and populated with EE_EmoEngineGetNextEvent()
     		\param hEmoState - a handle returned by EE_EmoStateCreate
-    	
+
     		\return EDK_ERROR_CODE
     				- EDK_ERROR_CODEEDK_OK if successful.
 
@@ -250,7 +252,7 @@ public interface Edk extends Library
     	*/
     	int
     		EE_EmoEngineEventGetEmoState(Pointer hEvent, Pointer hEmoState);
-    	
+
 
     	//! Retrieves the next EmoEngine event
     	/*!
@@ -263,13 +265,13 @@ public interface Edk extends Library
     		        <li> EDK_ERROR_CODEEDK_OK if a new event has been retrieved
     				<li> EDK_ERROR_CODEEDK_NO_EVENT if no new events have been generated by EmoEngine
     				</ul>
-    		
+
     		\sa edkErrorCode.h
     	*/
     	int
     		EE_EngineGetNextEvent(Pointer hEvent);
 
-    	
+
     	//! Clear a specific EmoEngine event type or all events currently inside the event queue. Event flags can be combined together as one argument except EE_UnknownEvent and EE_EmulatorError.
     	/*!
     		\param eventTypes - EmoEngine event type (int), multiple events can be combined such as (EE_UserAdded | EE_UserRemoved)
@@ -279,13 +281,13 @@ public interface Edk extends Library
     		        <li> EDK_ERROR_CODEEDK_OK if the events have been cleared from the queue
     				<li> EDK_ERROR_CODEEDK_INVALID_PARAMETER if input event types are invalid
     				</ul>
-    		
+
     		\sa int, edkErrorCode.h
     	*/
     	int
     		EE_EngineClearEventQueue(int eventTypes);
 
-    	
+
     	//! Retrieves number of active users connected to the EmoEngine.
     	/*!
     		\param pNumUserOut - receives number of users
@@ -312,7 +314,7 @@ public interface Edk extends Library
     		EE_SetHardwarePlayerDisplay(int userId, int playerNum);
 
 
-    	//! Loads an EmoEngine profile for the specified user.  
+    	//! Loads an EmoEngine profile for the specified user.
     	/*!
     		\param userId - user ID
     		\param profileBuffer - pointer to buffer containing a serialized user profile previously returned from EmoEngine.
@@ -358,10 +360,10 @@ public interface Edk extends Library
     	*/
     	int
     		EE_GetBaseProfile(Pointer hEvent);
-    	
+
 
     	//! Returns the number of bytes required to store a serialized version of the requested user profile.
-    	/*!	
+    	/*!
     		\param hEvt - an Pointer of type EE_ProfileEvent
     		\param pProfileSizeOut - receives number of bytes required by the profile
 
@@ -373,9 +375,9 @@ public interface Edk extends Library
     	int
     		EE_GetUserProfileSize(Pointer hEvt, IntByReference pProfileSizeOut);
 
-    	
+
     	//! Copies a serialized version of the requested user profile into the caller's buffer.
-    	/*!		
+    	/*!
     		\param hEvt - an Pointer returned in a EE_ProfileEvent event
     		\param destBuffer - pointer to a destination buffer
     		\param length - the size of the destination buffer in byte[]s
@@ -389,7 +391,7 @@ public interface Edk extends Library
     		EE_GetUserProfileBytes(Pointer hEvt, byte[] destBuffer, int length);
 
     	//!  Loads a user profile from disk and assigns it to the specified user
-    	/*!		
+    	/*!
     		\param userID - a valid user ID
     		\param szInputFilename - platform-dependent filesystem path of saved user profile
 
@@ -402,7 +404,7 @@ public interface Edk extends Library
     		EE_LoadUserProfile(int userID, String szInputFilename);
 
     	//!  Saves a user profile for specified user to disk
-    	/*!		
+    	/*!
     		\param userID - a valid user ID
     		\param szOutputFilename - platform-dependent filesystem path for output file
 
@@ -457,7 +459,7 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h, int
     	*/
-    	int 
+    	int
     		EE_ExpressivSetTrainingAction(int userId, int action);
 
 
@@ -472,7 +474,7 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h, int
     	*/
-    	int 
+    	int
     		EE_ExpressivSetTrainingControl(int userId, int control);
 
 
@@ -487,10 +489,10 @@ public interface Edk extends Library
 
     		\sa EDK_ERROR_CODE, int
     	*/
-    	int 
+    	int
     		EE_ExpressivGetTrainingAction(int userId, IntByReference pActionOut);
 
-    	
+
     	//! Return the duration of a Expressiv training session
     	/*!
     		\param userId - user ID
@@ -501,7 +503,7 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h
     	*/
-    	int 
+    	int
     		EE_ExpressivGetTrainingTime(int userId, IntByReference pTrainingTimeOut);
 
 
@@ -550,7 +552,7 @@ public interface Edk extends Library
 
     		\sa EDK_ERROR_CODE, int
     	*/
-    	int 
+    	int
     		EE_ExpressivSetSignatureType(int userId, int sigType);
 
     	//! Indicates whether the Expressiv suite is currently using either the built-in, universal signature or a trained signature
@@ -564,7 +566,7 @@ public interface Edk extends Library
 
     		\sa EDK_ERROR_CODE, int
     	*/
-    	int 
+    	int
     		EE_ExpressivGetSignatureType(int userId, IntByReference pSigTypeOut);
 
 
@@ -587,12 +589,12 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h, int, int
     	*/
-    	int 
+    	int
     		EE_CognitivSetCurrentLevel(int userId, int level,
     									int level1Action, int level2Action,
     									int level3Action, int level4Action);
 
-    	
+
     	//! Query the current Cognitiv level and corresponding action types
     	/*!
     		\param userId - user ID
@@ -607,7 +609,7 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h, int, int
     	*/
-    	int 
+    	int
     		EE_CognitivGetCurrentLevel(int userId, IntByReference pLevelOut,
     									IntByReference pLevel1ActionOut, IntByReference pLevel2ActionOut,
     									IntByReference pLevel3ActionOut, IntByReference pLevel4ActionOut);
@@ -628,7 +630,7 @@ public interface Edk extends Library
     	int
     		EE_CognitivSetActiveActions(int userId, NativeLong activeActions);
 
-    	
+
     	//! Get the current Cognitiv active action types
     	/*!
     		\param userId - user ID
@@ -642,7 +644,7 @@ public interface Edk extends Library
     	int
     		EE_CognitivGetActiveActions(int userId, NativeLongByReference pActiveActionsOut);
 
-    	
+
     	//! Return the duration of a Cognitiv training session
     	/*!
     		\param userId - user ID
@@ -653,10 +655,10 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h
     	*/
-    	int 
+    	int
     		EE_CognitivGetTrainingTime(int userId, IntByReference pTrainingTimeOut);
 
-    	
+
     	//! Set the training control flag for Cognitiv training
     	/*!
     		\param userId - user ID
@@ -667,10 +669,10 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h, int
     	*/
-    	int 
+    	int
     		EE_CognitivSetTrainingControl(int userId, int control);
 
-    	
+
     	//! Set the type of Cognitiv action to be trained
     	/*!
     		\param userId - user ID
@@ -681,7 +683,7 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h, int
     	*/
-    	int 
+    	int
     		EE_CognitivSetTrainingAction(int userId, int action);
 
 
@@ -695,7 +697,7 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h, int
     	*/
-    	int 
+    	int
     		EE_CognitivGetTrainingAction(int userId, IntByReference pActionOut);
 
 
@@ -713,8 +715,8 @@ public interface Edk extends Library
     	*/
         int
             EE_CognitivGetTrainedSignatureActions(int userId, NativeLongByReference pTrainedActionsOut);
-    	
-    	
+
+
     	//! Gets the current overall skill rating of the user in Cognitiv
     	/*!
     		Blocking call
@@ -747,7 +749,7 @@ public interface Edk extends Library
         int
             EE_CognitivGetActionSkillRating(int userId, int action, FloatByReference pActionSkillRatingOut);
 
-    	
+
     	//! Set the overall sensitivity for all Cognitiv actions
     	/*!
     		\param userId - user ID
@@ -758,10 +760,10 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h
     	*/
-    	int 
+    	int
     		EE_CognitivSetActivationLevel(int userId, int level);
 
-    	
+
     	//! Set the sensitivity of Cognitiv actions
     	/*!
     		\param userId - user ID
@@ -775,12 +777,12 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h
     	*/
-    	int 
+    	int
     		EE_CognitivSetActionSensitivity(int userId,
     										int action1Sensitivity, int action2Sensitivity,
     										int action3Sensitivity, int action4Sensitivity);
 
-    	
+
     	//! Get the overall sensitivity for all Cognitiv actions
     	/*!
     		\param userId - user ID
@@ -791,10 +793,10 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h
     	*/
-    	int 
+    	int
     		EE_CognitivGetActivationLevel(int userId, IntByReference pLevelOut);
 
-    	
+
     	//! Query the sensitivity of Cognitiv actions
     	/*!
     		\param userId - user ID
@@ -808,12 +810,12 @@ public interface Edk extends Library
 
     		\sa edkErrorCode.h
     	*/
-    	int 
+    	int
     		EE_CognitivGetActionSensitivity(int userId,
     										IntByReference pAction1SensitivityOut, IntByReference pAction2SensitivityOut,
     										IntByReference pAction3SensitivityOut, IntByReference pAction4SensitivityOut);
 
-    	
+
     	//! Start the sampling of Neutral state in Cognitiv
     	/*!
     		\param userId - user ID
@@ -826,7 +828,7 @@ public interface Edk extends Library
     	int
     		EE_CognitivStartSamplingNeutral(int userId);
 
-    	
+
     	//! Stop the sampling of Neutral state in Cognitiv
     	/*!
     		\param userId - user ID
@@ -839,7 +841,7 @@ public interface Edk extends Library
     	int
     		EE_CognitivStopSamplingNeutral(int userId);
 
-    	
+
     	//! Enable or disable signature caching in Cognitiv
     	/*!
     		\param userId  - user ID
@@ -896,7 +898,7 @@ public interface Edk extends Library
     		EE_CognitivGetSignatureCacheSize(int userId, IntByReference pSizeOut);
 
 
-    	//! Returns a struct containing details about the specified EEG channel's headset 
+    	//! Returns a struct containing details about the specified EEG channel's headset
         /*!
             \param channelId - channel identifier (see EmoStateDll.h)
             \param pDescriptorOut - provides detailed sensor location and other info
@@ -1097,7 +1099,7 @@ public interface Edk extends Library
     	int EE_DataSetBufferSizeInSec(float bufferSizeInSec);
 
     	//! Returns the size of the data buffer
-    	/*! 
+    	/*!
     		\param pBufferSizeInSecOut - receives the size of the data buffer
     		\return EDK_ERROR_CODE
                     - EDK_ERROR_CODEEDK_OK if successful
@@ -1151,4 +1153,4 @@ public interface Edk extends Library
     	int EE_DataGetSamplingRate(int userId, IntByReference samplingRateOut);
     //DEPLOYMENT::NON_PREMIUM_RELEASE::REMOVE_END
 }
-    
+

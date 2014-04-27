@@ -1,17 +1,19 @@
+package com.emotiv;
+
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.*;
 
-public interface EmoState extends Library  
+public interface EmoState extends Library
 {
 	EmoState INSTANCE = (EmoState)
             Native.loadLibrary("edk",
             		EmoState.class);
-    	
+
     	public enum EE_EmotivSuite_t {
     		EE_EXPRESSIV, EE_AFFECTIV, EE_COGNITIV
-    	} 
+    	}
 
     	/**
     	 * Expressiv facial expression type enumerator
@@ -41,8 +43,8 @@ public interface EmoState extends Library
     			return(bit);
     		}
 
-    	} 
-    	
+    	}
+
     	/**
     	 * Affectiv emotional type enumerator
     	 */
@@ -63,7 +65,7 @@ public interface EmoState extends Library
     			return(bit);
     		}
 
-    	} 
+    	}
 
     	/**
     	 * Cognitiv action type enumerator
@@ -95,16 +97,16 @@ public interface EmoState extends Library
     			return(bit);
     		}
 
-    	} 
-    	
+    	}
+
     	/**
     	 * Wireless Signal Strength enumerator
     	 */
     	public enum EE_SignalStrength_t {
 
     		NO_SIGNAL, BAD_SIGNAL, GOOD_SIGNAL
-    	
-    	} 
+
+    	}
 
     	//! Logical input channel identifiers
     	/*! Note: the number of channels may not necessarily match the number of
@@ -112,21 +114,21 @@ public interface EmoState extends Library
     		sensors will be identical: CMS = DRL, FP1 = AF3, F2 = AF4.
     	*/
     	public enum EE_InputChannels_t {
-    		EE_CHAN_CMS, EE_CHAN_DRL, EE_CHAN_FP1, EE_CHAN_AF3, EE_CHAN_F7, 
+    		EE_CHAN_CMS, EE_CHAN_DRL, EE_CHAN_FP1, EE_CHAN_AF3, EE_CHAN_F7,
     		EE_CHAN_F3, EE_CHAN_FC5, EE_CHAN_T7, EE_CHAN_P7, EE_CHAN_O1,
     		EE_CHAN_O2, EE_CHAN_P8, EE_CHAN_T8, EE_CHAN_FC6, EE_CHAN_F4,
     		EE_CHAN_F8, EE_CHAN_AF4, EE_CHAN_FP2
-    	} 
+    	}
 
         //! EEG Electrode Contact Quality enumeration
         /*! Used to characterize the EEG signal reception or electrode contact
             for a sensor on the headset.  Note that this differs from the wireless
-            signal strength, which refers to the radio communication between the 
+            signal strength, which refers to the radio communication between the
             headset transmitter and USB dongle receiver.
          */
         public enum EE_EEG_ContactQuality_t {
-            EEG_CQ_NO_SIGNAL, EEG_CQ_VERY_BAD, EEG_CQ_POOR, 
-            EEG_CQ_FAIR, EEG_CQ_GOOD } 
+            EEG_CQ_NO_SIGNAL, EEG_CQ_VERY_BAD, EEG_CQ_POOR,
+            EEG_CQ_FAIR, EEG_CQ_GOOD }
 
     	//! Create EmoState handle.
     	/*!
@@ -154,7 +156,7 @@ public interface EmoState extends Library
     	//! Initialize the EmoState into neutral state
     	/*!
     		\param state - Pointer
-    		
+
     		\sa ES_Create, ES_Free
     	*/
     	void ES_Init(Pointer state);
@@ -318,10 +320,10 @@ public interface EmoState extends Library
     	/*!
     		The horizontal and vertical position of the eyes are stored in the parameter x and y
     		respectively. They are floating point values ranging from -1.0 to 1.0.
-    		
+
     		For horizontal position, -1.0 indicates that the user is looking left while
     		1.0 indicates that the user is looking right.
-    		
+
     		For vertical position, -1.0 indicates that the user is looking down while
     		1.0 indicatest that the user is looking up.
 
@@ -338,7 +340,7 @@ public interface EmoState extends Library
     	//! Returns the eyebrow extent of the user (Obsolete function)
     	/*!
     		\param state - Pointer
-    		
+
     		\return eyebrow extent value (0.0 to 1.0)
 
     		\sa ES_ExpressivGetUpperFaceAction, ES_ExpressivGetUpperFaceActionPower
@@ -348,7 +350,7 @@ public interface EmoState extends Library
     	//! Returns the smile extent of the user (Obsolete function)
     	/*!
     		\param state - EmoStatehandle
-    		
+
     		\return smile extent value (0.0 to 1.0)
 
     		\sa ES_ExpressivGetLowerFaceAction, ES_ExpressivGetLowerFaceActionPower
@@ -405,7 +407,7 @@ public interface EmoState extends Library
     		\sa ES_ExpressivGetLowerFaceAction
     	*/
     	float ES_ExpressivGetLowerFaceActionPower(Pointer state);
-    	
+
     	//! Query whether the signal is too noisy for Expressiv detection to be active
     	/*!
     		\param state - Pointer
@@ -436,7 +438,7 @@ public interface EmoState extends Library
     		\sa ES_AffectivGetExcitementLongTermScore
     	*/
     	float ES_AffectivGetExcitementShortTermScore(Pointer state);
-    	
+
     	//! Query whether the signal is too noisy for Affectiv detection to be active
     	/*!
     		\param state - Pointer
@@ -523,7 +525,7 @@ public interface EmoState extends Library
     		\sa ES_CognitivGetCurrentAction
     	*/
     	float ES_CognitivGetCurrentActionPower(Pointer state);
-    	
+
     	//! Query whether the signal is too noisy for Cognitiv detection to be active
     	/*!
     		\param state - Pointer

@@ -1,3 +1,5 @@
+package com.emotiv;
+
 public enum EdkErrorCode {
 	 EDK_OK								(0x0000),
 	//! An internal error occurred
@@ -53,7 +55,7 @@ public enum EdkErrorCode {
 
 	//! Reserved return value
 	 EDK_RESERVED1                      (0x0900);
-	 
+
 	private int bit;
 	EdkErrorCode(int bitNumber)
 	{
