@@ -14,9 +14,6 @@
 package com.spaceout;
 
 import android.app.Service;
-import android.os.Bundle;
-import android.os.Environment;
-import android.view.ViewGroup;
 import android.util.Log;
 import android.media.MediaRecorder;
 
