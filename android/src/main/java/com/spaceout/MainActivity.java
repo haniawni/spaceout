@@ -10,6 +10,8 @@ import android.util.Log;
 
 import android.view.View;
 
+import android.widget.TextView;
+
 public class MainActivity extends Activity {
     private static final int REQUEST_CODE = 1;
 
@@ -47,6 +49,9 @@ public class MainActivity extends Activity {
                 Intent serviceIntent = new Intent(this, NeuralAlertnessService.class);
                 serviceIntent.putExtra("ipAddress", this.ipAddress);
                 startService(serviceIntent);
+
+                TextView subtitles = (TextView) findViewById(R.id.subtitles);
+                subtitles.setText("IP address: " + ipAddress + "\n\n---\n\n");
             }
         }
     }
