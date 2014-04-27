@@ -41,8 +41,8 @@ public class MainActivity extends Activity {
         if (requestCode == REQUEST_CODE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                String ipAddress = data.getStringExtra("ipAddress");
-                Log.d("SPACEOUT", "ip address of server set to " + ipAddress);
+                this.ipAddress = data.getStringExtra("ipAddress");
+                Log.d("SPACEOUT", "ip address of server set to " + this.ipAddress);
             }
         }
     }
