@@ -59,6 +59,7 @@ public class MainActivity extends Activity {
 				WIT_AUDIO_FORMAT
 			)
 		);
+		audioRecorder.startRecording();
     }
 
     @Override
