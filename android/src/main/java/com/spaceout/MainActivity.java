@@ -39,4 +39,11 @@ public class MainActivity extends Activity {
 		);
     }
 
+	@Override
+	protected void onDestroy() {
+		if (audioRecorder != null) {
+			audioRecorder.release();
+			audioRecorder = null;
+		}
+	}
 }
