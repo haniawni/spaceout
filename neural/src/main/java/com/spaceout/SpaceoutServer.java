@@ -59,7 +59,7 @@ public class SpaceoutServer implements HttpHandler {
 
     private final void handleExchange(String remoteHostAddress, String messageString, BufferedWriter responseWriter) {
         try {
-            responseWriter.write("{\"api version\": EXCELTHIOR, \"spaced out?\": " + EmotivWrapper.getIsBored() + "}");
+            responseWriter.write("{\"api version\": \"EXCELTHIOR\", \"spaced out?\": " + EmotivWrapper.getIsBored() + "}");
         } catch (IOException ex) {
             System.err.println("Failed to respond to remote request.");
             System.exit(1);
