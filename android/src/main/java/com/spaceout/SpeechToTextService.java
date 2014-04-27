@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 
 import android.app.Service;
@@ -96,6 +97,38 @@ public class SpeechToTextService extends Service {
             try {
                 JSONObject result = new JSONObject(response);
                 messageID = result.getString("msg_id");
+            } catch (JSONException jsEx) {
+                Log.e("SPACEOUT", "Failed to parse result from Wit.AI!");
+                Log.e("SPACEOUT", jsEx.getMessage());
+            }
+        } catch (IOException ex) {
+            // TODO -- show error on android GUI
+            Log.e("SPACEOUT", "Failed to connect to Wit.AI!");
+            Log.e("SPACEOUT", ex.getMessage());
+        }
+
+        // pass the byte array out to Wit.AI
+        GetMethod get = new GetMethod("https://api.wit.ai/messages/" + messageID);
+        get.setRequestHeader("Authorization", "Bearer: " + API_KEY);
+
+        try {
+            this.client.executeMethod(get);
+
+            byte[] responseBody = get.getResponseBody();
+            get.releaseConnection();
+            if (responseBody == null) {
+                Log.d("SPACEOUT", "no response received from Wit.AI");
+                // TODO -- show error on android GUI
+                return null;
+            }
+
+            String response = new String(responseBody);
+            Log.d("SPACEOUT", "response was: " + response);
+
+            // parse the JSON response
+            try {
+                JSONObject result = new JSONObject(response);
+                return result.getString("msg_body");
             } catch (JSONException jsEx) {
                 Log.e("SPACEOUT", "Failed to parse result from Wit.AI!");
                 Log.e("SPACEOUT", jsEx.getMessage());
