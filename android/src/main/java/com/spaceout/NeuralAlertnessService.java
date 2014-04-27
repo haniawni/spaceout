@@ -18,6 +18,9 @@ import android.os.IBinder;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class NeuralAlertnessService extends Service {
     private Timer refreshTimer;
     private HttpClient client;
@@ -42,7 +45,11 @@ public class NeuralAlertnessService extends Service {
                     "SPACEOUT",
                     "polling for alertness..."
                 );
-                checkIsBored();
+                if (checkIsBored()) {
+                    Log.d("SPACEOUT", "user is bored!");
+                    // TODO -- flash screen
+                    // TODO -- start audio transcoding to text
+                }
             }
         }, 0, 1000);
     }
@@ -67,7 +74,15 @@ public class NeuralAlertnessService extends Service {
             String response = new String(responseBody);
             Log.d("SPACEOUT", "response was: " + response);
 
-            // TODO -- parse JSON and check "spaced out?" key for true/false
+            // parse the JSON response
+            try {
+                JSONObject result = new JSONObject(response);
+                return result.getBoolean("spaced out?");
+            } catch (JSONException jsEx) {
+                Log.e("SPACEOUT", "Failed to parse result from server!");
+                Log.e("SPACEOUT", jsEx.getMessage());
+                return false;
+            }
         } catch (IOException ex) {
             // TODO -- show error on android GUI
             Log.e("SPACEOUT", "Failed to connect to server!");
