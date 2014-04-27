@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.media.MediaRecorder;
 import android.media.AudioRecord;
 
+import android.view.View;
+
 public class MainActivity extends Activity {
 
 	/**
@@ -39,6 +41,12 @@ public class MainActivity extends Activity {
 		);
 
 		audioRecorder.startRecording();
+
+		startService(new Intent(this, NeuralAlertnessService.class));
+    }
+
+    public void setNetwork(View view) {
+        startActivity(new Intent(this, NetworkActivity.class));
     }
 
 	@Override
@@ -47,5 +55,9 @@ public class MainActivity extends Activity {
 			audioRecorder.release();
 			audioRecorder = null;
 		}
+
+		stopService(new Intent(this, NeuralAlertnessService.class));
+
+        super.onDestroy();
 	}
 }
