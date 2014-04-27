@@ -14,10 +14,10 @@ public class MainActivity extends Activity {
 	/**
 	 * The audio sample properties expected by Wit.
 	 */
-	private static final int SAMPLE_RATE_HZ = 8000;
-	private static final int CHANNEL_CONFIG = AudioRecord.CHANNEL_IN_MONO;
-	private static final int AUDIO_FORMAT = AudioRecord.ENCODING_PCM_16BIT;
-	private static final short DURATION_S = 10
+	private static final int WIT_SAMPLE_RATE_HZ = 8000;
+	private static final int WIT_CHANNEL_CONFIG = AudioRecord.CHANNEL_IN_MONO;
+	private static final int WIT_AUDIO_FORMAT = AudioRecord.ENCODING_PCM_16BIT;
+	private static final short WIT_MAX_DURATION_S = 10
 
     private AudioRecord audioRecorder = null;
 
@@ -28,13 +28,13 @@ public class MainActivity extends Activity {
 
         audioRecorder = new AudioRecord(
 			MediaRecorder.AudioSource.MIC,
-			SAMPLE_RATE_HZ,
-			CHANNEL_CONFIG,
-			AUDIO_FORMAT,
+			WIT_SAMPLE_RATE_HZ,
+			WIT_CHANNEL_CONFIG,
+			WIT_AUDIO_FORMAT,
 			2 * AudioRecord.getMinBufferSize(
-				SAMPLE_RATE_HZ,
-				CHANNEL_CONFIG,
-				AUDIO_FORMAT
+				WIT_SAMPLE_RATE_HZ,
+				WIT_CHANNEL_CONFIG,
+				WIT_AUDIO_FORMAT
 			)
 		);
 
