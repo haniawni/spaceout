@@ -22,4 +22,11 @@ public class MainActivity extends Activity {
         startActivity(new Intent(this, NetworkActivity.class));
     }
 
+    @Override
+    public void onDestroy() {
+        stopService(new Intent(this, NeuralAlertnessService.class));
+
+        super.onDestroy();
+    }
+
 }
