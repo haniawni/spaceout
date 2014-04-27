@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 
 import android.app.Service;
@@ -38,10 +37,10 @@ public class SpeechToTextService extends Service {
 	private static final int WIT_SAMPLE_RATE_HZ = 8000;
 	private static final int WIT_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
 	private static final int WIT_AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
-	private static final short WIT_MAX_DURATION_S = 10;
+    private static final int WIT_BUFFER_SIZE = 16 * 1024 * 10; // 16 Kbits per second
 
     private AudioRecord audioRecorder = null;
-    private int bufferSize;
+    private byte[] buffer = new byte[WIT_BUFFER_SIZE];
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -53,18 +52,12 @@ public class SpeechToTextService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.client = new HttpClient();
 
-        this.bufferSize = 10 * AudioRecord.getMinBufferSize(
-            WIT_SAMPLE_RATE_HZ,
-            WIT_CHANNEL_CONFIG,
-            WIT_AUDIO_FORMAT
-        );
-
         audioRecorder = new AudioRecord(
 			MediaRecorder.AudioSource.MIC,
 			WIT_SAMPLE_RATE_HZ,
 			WIT_CHANNEL_CONFIG,
 			WIT_AUDIO_FORMAT,
-            this.bufferSize
+            WIT_BUFFER_SIZE
 		);
 		audioRecorder.startRecording();
 
@@ -73,6 +66,15 @@ public class SpeechToTextService extends Service {
         IntentFilter filter = new IntentFilter();
         filter.addAction(NeuralAlertnessService.USER_IS_BORED);
         registerReceiver(receiver, filter);
+
+        new Thread() {
+            public void run() {
+                while (audioRecorder != null) {
+                    // continuously get the last X seconds as a byte array
+                    audioRecorder.read(buffer, 0, WIT_BUFFER_SIZE);
+                }
+            }
+        }.start();
 
         return Service.START_STICKY;
     }
@@ -100,15 +102,12 @@ public class SpeechToTextService extends Service {
     };
 
     public String getSpokenText() {
-        // get the speech sound as a byte array
-        byte[] buffer = new byte[bufferSize];
-        audioRecorder.read(buffer, 0, bufferSize);
 
         // pass the byte array out to Wit.AI
         PostMethod post = new PostMethod("https://api.wit.ai/speech");
         post.setRequestHeader("Authorization", "Bearer " + API_KEY);
-        post.setRequestHeader("Content-Type", "audio/raw;encoding=unsigned-integer;bits=16;rate=8000;endian=big");
-        post.setRequestHeader("Content-Length", ""+bufferSize);
+        post.setRequestHeader("Content-Type", "audio/raw;encoding=signed-integer;bits=16;rate=8000;endian=little");
+        post.setRequestHeader("Content-Length", ""+WIT_BUFFER_SIZE);
         post.setRequestEntity(new ByteArrayRequestEntity(buffer));
 
         String messageID = null;
@@ -130,47 +129,9 @@ public class SpeechToTextService extends Service {
             // parse the JSON response
             try {
                 JSONObject result = new JSONObject(response);
-                messageID = result.getString("msg_id");
-            } catch (JSONException jsEx) {
-                Log.e("SPACEOUT", "Failed to parse POST result from Wit.AI!");
-                Log.e("SPACEOUT", jsEx.getMessage());
-            }
-        } catch (IOException ex) {
-            // TODO -- show error on android GUI
-            Log.e("SPACEOUT", "Failed to connect to Wit.AI!");
-            Log.e("SPACEOUT", ex.getMessage());
-        }
-
-        if (messageID == null) {
-            // can't retrieve the translated text if we didn't get a message ID
-            return null;
-        }
-
-        // pass the byte array out to Wit.AI
-        GetMethod get = new GetMethod("https://api.wit.ai/messages/" + messageID);
-        get.addRequestHeader("Authorization", "Bearer: " + API_KEY);
-
-        try {
-            int resultCode = this.client.executeMethod(get);
-            Log.d("SPACEOUT", "GET response code: " + resultCode);
-
-            byte[] responseBody = get.getResponseBody();
-            get.releaseConnection();
-            if (responseBody == null) {
-                Log.d("SPACEOUT", "no GET response received from Wit.AI");
-                // TODO -- show error on android GUI
-                return null;
-            }
-
-            String response = new String(responseBody);
-            Log.d("SPACEOUT", "response was: " + response);
-
-            // parse the JSON response
-            try {
-                JSONObject result = new JSONObject(response);
                 return result.getString("msg_body");
             } catch (JSONException jsEx) {
-                Log.e("SPACEOUT", "Failed to parse GET result from Wit.AI!");
+                Log.e("SPACEOUT", "Failed to parse POST result from Wit.AI!");
                 Log.e("SPACEOUT", jsEx.getMessage());
             }
         } catch (IOException ex) {
