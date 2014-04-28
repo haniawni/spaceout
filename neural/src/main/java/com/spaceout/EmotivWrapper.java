@@ -73,7 +73,7 @@ public class EmotivWrapper {
 					float boredomScore = EmoState.INSTANCE.ES_AffectivGetEngagementBoredomScore(eState);
 					float medScore = EmoState.INSTANCE.ES_AffectivGetMeditationScore(eState);
 
-                    if(boredomScore > 0.5) {
+                    if(boredomScore > 0.7) {
                         System.out.println("OMG YOU'RE SPACING OUT\n\n\n");
                         isBored = true;
                     } else {
