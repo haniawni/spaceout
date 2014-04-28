@@ -40,7 +40,7 @@ public class SpeechToTextService extends Service {
     private static final int WIT_BUFFER_SIZE = 16 * 1024 * 10; // 16 Kbits per second
 
     private AudioRecord audioRecorder = null;
-    private byte[] buffer = new byte[WIT_BUFFER_SIZE];
+    private byte[] audioBuffer = new byte[WIT_BUFFER_SIZE];
 
     private boolean keepTranscoding = false;
 
@@ -75,8 +75,10 @@ public class SpeechToTextService extends Service {
         new Thread() {
             public void run() {
                 while (audioRecorder != null) {
+                    byte[] buffer = new byte[WIT_BUFFER_SIZE];
                     // continuously get the last X seconds as a byte array
                     audioRecorder.read(buffer, 0, WIT_BUFFER_SIZE);
+                    audioBuffer = buffer;
                 }
             }
         }.start();
@@ -92,7 +94,9 @@ public class SpeechToTextService extends Service {
                 public void run() {
                     while (keepTranscoding) {
                         Log.d("SPACEOUT", "Retrieving spoken text");
-                        String spokenText = getSpokenText();
+                        byte[] buffer = audioBuffer;
+                        audioBuffer = new byte[WIT_BUFFER_SIZE];
+                        String spokenText = getSpokenText(buffer);
 
                         if (spokenText == null) {
                             Log.d("SPACEOUT", "No spoken text was received");
@@ -120,7 +124,7 @@ public class SpeechToTextService extends Service {
         }
     };
 
-    public String getSpokenText() {
+    public String getSpokenText(byte[] buffer) {
         // pass the byte array out to Wit.AI
         PostMethod post = new PostMethod("https://api.wit.ai/speech");
         post.setRequestHeader("Authorization", "Bearer " + API_KEY);
