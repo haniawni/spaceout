@@ -26,6 +26,7 @@ public class MainActivity extends Activity {
     private String ipAddress;
 
 	private DeckOfCardsManager toqManager;
+	private RemoteDeckOfCards toqDeck;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -33,6 +34,19 @@ public class MainActivity extends Activity {
             TextView subtitles = (TextView) findViewById(R.id.subtitles);
             String spokenText = intent.getStringExtra("text");
             subtitles.append(spokenText + "\n");
+
+			String[] messageText = new String[1];
+			messageText[0] = "Message Text";
+			ListCard listCard = toqDeck.getListCard();
+			SimpleTextCard newCard = new SimpleTextCard(
+				listCard.size(),
+				"Header Text",
+				timeMillis,
+				"Title Text",
+				messageText
+			);
+			listCard.add(newCard);
+			toqManager.updateDeckOfCards(toqDeck);
         }
     };
 
@@ -44,7 +58,8 @@ public class MainActivity extends Activity {
 
 		// initialize the Toq display for our app
 		toqManager = DeckOfCardsManager.getInstance(this);
-		toqManager.installDeckOfCards(new RemoteDeckOfCards(this));
+		toqDeck = new RemoteDeckOfCards(this)
+		toqManager.installDeckOfCards(toqDeck);
     }
 
     @Override
