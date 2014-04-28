@@ -20,6 +20,11 @@
           <artifactId>commons-httpclient</artifactId>
           <version>3.1</version>
       </dependency>
+      <dependency>
+          <groupId>android</groupId>
+          <artifactId>toq-api</artifactId>
+          <version>1.4.0</version>
+      </dependency>
   </dependencies>
 
   <build>

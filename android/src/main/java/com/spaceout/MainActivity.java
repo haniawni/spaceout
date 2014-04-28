@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.qualcomm.toq.smartwatch.api.v1.deckofcards.remote.RemoteDeckOfCards;
 import com.qualcomm.toq.smartwatch.api.v1.deckofcards.remote.DeckOfCardsManager;
+import com.qualcomm.toq.smartwatch.api.v1.deckofcards.card.ListCard;
 import com.qualcomm.toq.smartwatch.api.v1.deckofcards.card.SimpleTextCard;
 
 public class MainActivity extends Activity {
@@ -39,14 +40,18 @@ public class MainActivity extends Activity {
 			messageText[0] = "Message Text";
 			ListCard listCard = toqDeck.getListCard();
 			SimpleTextCard newCard = new SimpleTextCard(
-				listCard.size(),
+				""+listCard.size(),
 				"Header Text",
-				timeMillis,
+				5000,
 				"Title Text",
 				messageText
 			);
 			listCard.add(newCard);
-			toqManager.updateDeckOfCards(toqDeck);
+            try {
+                toqManager.updateDeckOfCards(toqDeck);
+            } catch (Exception ex) {
+                Log.d("SPACEOUT", ex.getMessage());
+            }
         }
     };
 
@@ -58,8 +63,12 @@ public class MainActivity extends Activity {
 
 		// initialize the Toq display for our app
 		toqManager = DeckOfCardsManager.getInstance(this);
-		toqDeck = new RemoteDeckOfCards(this)
-		toqManager.installDeckOfCards(toqDeck);
+		toqDeck = new RemoteDeckOfCards(this);
+        try {
+            toqManager.installDeckOfCards(toqDeck);
+        } catch (Exception ex) {
+            Log.d("SPACEOUT", ex.getMessage());
+        }
     }
 
     @Override
