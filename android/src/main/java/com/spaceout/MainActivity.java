@@ -102,6 +102,10 @@ public class MainActivity extends Activity {
         if (this.ipAddress != null) {
             TextView subtitles = (TextView) findViewById(R.id.subtitles);
             subtitles.setText("IP address: " + this.ipAddress + "\n\n---\n\n");
+
+            Intent broadcast = new Intent();
+            broadcast.setAction(NeuralAlertnessService.USER_IS_ALERT);
+            sendBroadcast(broadcast);
         }
     }
 

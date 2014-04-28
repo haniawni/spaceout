@@ -42,6 +42,8 @@ public class SpeechToTextService extends Service {
     private AudioRecord audioRecorder = null;
     private byte[] buffer = new byte[WIT_BUFFER_SIZE];
 
+    private boolean keepTranscoding = false;
+
     @Override
     public IBinder onBind(Intent intent) {
         // TODO -- implement
@@ -53,19 +55,22 @@ public class SpeechToTextService extends Service {
         this.client = new HttpClient();
 
         audioRecorder = new AudioRecord(
-			MediaRecorder.AudioSource.MIC,
-			WIT_SAMPLE_RATE_HZ,
-			WIT_CHANNEL_CONFIG,
-			WIT_AUDIO_FORMAT,
+            MediaRecorder.AudioSource.MIC,
+            WIT_SAMPLE_RATE_HZ,
+            WIT_CHANNEL_CONFIG,
+            WIT_AUDIO_FORMAT,
             WIT_BUFFER_SIZE
-		);
-		audioRecorder.startRecording();
+        );
+        audioRecorder.startRecording();
 
         // register a listener for bored user
-        Log.d("SPACEOUT", "registering boredom hook");
+        Log.d("SPACEOUT", "registering hooks");
         IntentFilter filter = new IntentFilter();
         filter.addAction(NeuralAlertnessService.USER_IS_BORED);
-        registerReceiver(receiver, filter);
+        registerReceiver(boredReceiver, filter);
+        filter = new IntentFilter();
+        filter.addAction(NeuralAlertnessService.USER_IS_ALERT);
+        registerReceiver(alertReceiver, filter);
 
         new Thread() {
             public void run() {
@@ -79,12 +84,13 @@ public class SpeechToTextService extends Service {
         return Service.START_STICKY;
     }
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    private BroadcastReceiver boredReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            keepTranscoding = true;
             new Thread() {
                 public void run() {
-                    while (audioRecorder != null) {
+                    while (keepTranscoding) {
                         Log.d("SPACEOUT", "Retrieving spoken text");
                         String spokenText = getSpokenText();
 
@@ -103,8 +109,18 @@ public class SpeechToTextService extends Service {
         }
     };
 
-    public String getSpokenText() {
+    private BroadcastReceiver alertReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            new Thread() {
+                public void run() {
+                    keepTranscoding = false;
+                }
+            }.start();
+        }
+    };
 
+    public String getSpokenText() {
         // pass the byte array out to Wit.AI
         PostMethod post = new PostMethod("https://api.wit.ai/speech");
         post.setRequestHeader("Authorization", "Bearer " + API_KEY);
@@ -146,11 +162,12 @@ public class SpeechToTextService extends Service {
     }
 
     public void onDestroy() {
-		if (audioRecorder != null) {
-			audioRecorder.release();
-			audioRecorder = null;
-		}
-        unregisterReceiver(receiver);
+        if (audioRecorder != null) {
+            audioRecorder.release();
+            audioRecorder = null;
+        }
+        unregisterReceiver(boredReceiver);
+        unregisterReceiver(alertReceiver);
         super.onDestroy();
     }
 }
