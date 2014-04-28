@@ -84,18 +84,20 @@ public class SpeechToTextService extends Service {
         public void onReceive(Context context, Intent intent) {
             new Thread() {
                 public void run() {
-                    Log.d("SPACEOUT", "Retrieving spoken text");
-                    String spokenText = getSpokenText();
+                    while (audioRecorder != null) {
+                        Log.d("SPACEOUT", "Retrieving spoken text");
+                        String spokenText = getSpokenText();
 
-                    if (spokenText == null) {
-                        Log.d("SPACEOUT", "No spoken text was received");
-                        return;
+                        if (spokenText == null) {
+                            Log.d("SPACEOUT", "No spoken text was received");
+                            continue;
+                        }
+
+                        Intent broadcast = new Intent();
+                        broadcast.setAction(SPEECH_DETECTED);
+                        broadcast.putExtra("text", spokenText);
+                        sendBroadcast(broadcast);
                     }
-
-                    Intent broadcast = new Intent();
-                    broadcast.setAction(SPEECH_DETECTED);
-                    broadcast.putExtra("text", spokenText);
-                    sendBroadcast(broadcast);
                 }
             }.start();
         }
